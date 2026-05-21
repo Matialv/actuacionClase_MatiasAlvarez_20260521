@@ -29,7 +29,7 @@ resource "aws_subnet" "AC2-subnet-public-a" {
 
 resource "aws_subnet" "AC2-subnet-public-b" {
   vpc_id                  = aws_vpc.AC2-vpc.id
-  cidr_block              = "10.0.2.0/24"
+  cidr_block              = "10.10.2.0/24"
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
 
@@ -40,7 +40,7 @@ resource "aws_subnet" "AC2-subnet-public-b" {
 
 resource "aws_subnet" "AC2-subnet-private-a" {
   vpc_id            = aws_vpc.AC2-vpc.id
-  cidr_block        = "10.0.3.0/24"
+  cidr_block        = "10.10.3.0/24"
   availability_zone = "us-east-1a"
 
   tags = {
