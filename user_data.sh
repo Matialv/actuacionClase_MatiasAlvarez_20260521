@@ -1,5 +1,6 @@
 #!/bin/bash
 # Actualizar repositorios e instalar Apache usando dnf (nativo de AL2023)
+sleep 10
 dnf update -y
 dnf install -y httpd
 

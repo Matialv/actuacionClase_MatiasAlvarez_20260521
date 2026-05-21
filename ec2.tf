@@ -4,7 +4,7 @@ resource "aws_launch_template" "AC2-lt" {
   instance_type = "t3.micro"
   key_name      = "vockey"
 
-  user_data = filebase64("${path.module}/user_data.sh")
+  user_data = file("${path.module}/user_data.sh")
 
   network_interfaces {
     associate_public_ip_address = false
