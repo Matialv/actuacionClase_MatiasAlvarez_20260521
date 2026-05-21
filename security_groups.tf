@@ -28,7 +28,7 @@ resource "aws_security_group" "AC2-sg-ec2" {
   vpc_id      = aws_vpc.AC2-vpc.id
 
   ingress {
-    from_port       = 81
+    from_port       = 80
     to_port         = 80
     protocol        = "tcp"
     security_groups = [aws_security_group.AC2-sg-alb.id]
