@@ -1,15 +1,25 @@
 #!/bin/bash
-yum install -y httpd
-systemctl enable httpd
+# Actualizar repositorios e instalar Apache usando dnf (nativo de AL2023)
+dnf update -y
+dnf install -y httpd
+
+# Iniciar y habilitar el servicio de Apache
 systemctl start httpd
+systemctl enable httpd
 
-TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" \
-  -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
-  http://169.254.169.254/latest/meta-data/instance-id)
-HOSTNAME=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
-  http://169.254.169.254/latest/meta-data/local-hostname)
+# Obtener Token IMDSv2 con tiempo de espera (timeout) para evitar bloqueos
+TOKEN=$(curl -s -X PUT "http://169.254.169" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" --connect-timeout 5)
 
+# Validar si obtuvimos el token antes de pedir las variables
+if [ -n "$TOKEN" ]; then
+  INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169 --connect-timeout 5)
+  HOSTNAME=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169 --connect-timeout 5)
+else
+  INSTANCE_ID="Unknown-AL2023"
+  HOSTNAME=$(hostname)
+fi
+
+# Crear el sitio web
 cat > /var/www/html/index.html << ENDOFHTML
 <html>
 <body style="font-family: Arial; text-align: center; padding: 50px;">
