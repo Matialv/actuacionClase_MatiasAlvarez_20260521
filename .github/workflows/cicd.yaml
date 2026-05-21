@@ -1,8 +1,9 @@
 name: Terraform
 
 on:
+  workflow_dispatch:
   push:
-    branches: [develop]
+    branches: [main]
 
 jobs:
   terraform:
@@ -11,10 +12,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v4
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v5
+      uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -22,20 +23,20 @@ jobs:
         aws-region: "us-east-1"
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+      uses: hashicorp/setup-terraform@v4
 
     - name: Terraform Init
       run: terraform init
 
     - name: Terraform Plan
-      run: terraform planning
+      run: terraform plan
 
     - name: Terraform Apply
       run: terraform apply -auto-approve
 
     - name: Show ALB URL
       run: |
-        ALB_URL=$(terraform output -raw alb_url_name)
+        ALB_URL=$(terraform output -raw alb_dns_name)
         echo "## Deployment complete" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**ALB URL:** http://${ALB_URL}" >> $GITHUB_STEP_SUMMARY
