@@ -33,6 +33,13 @@ resource "aws_autoscaling_group" "AC2-asg" {
     version = "$Latest"
   }
 
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+    }
+  }
+
   depends_on = [
     aws_route_table_association.AC2-rta-private-a,
     aws_route_table_association.AC2-rta-private-b,
