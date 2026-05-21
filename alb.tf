@@ -36,6 +36,6 @@ resource "aws_lb_listener" "AC2-lb-listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.AC2-tg.id
+    target_group_arn = aws_lb_target_group.AC2-tg.arn
   }
 }
