@@ -96,7 +96,7 @@ resource "aws_route_table_association" "AC2-rta-public-a" {
 }
 
 resource "aws_route_table_association" "AC2-rta-public-b" {
-  subnet_id      = aws_subnet.AC2-subnet-public-a.id
+  subnet_id      = aws_subnet.AC2-subnet-public-b.id
   route_table_id = aws_route_table.AC2-rt-public.id
 }
 
@@ -114,7 +114,7 @@ resource "aws_route_table" "AC2-rt-private" {
 }
 
 resource "aws_route_table_association" "AC2-rta-private-a" {
-  subnet_id      = aws_subnet.AC2-subnet-private-b.id
+  subnet_id      = aws_subnet.AC2-subnet-private-a.id
   route_table_id = aws_route_table.AC2-rt-private.id
 }
 
