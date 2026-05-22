@@ -1,26 +1,27 @@
 #!/bin/bash
-# Actualizar repositorios e instalar Apache usando dnf (nativo de AL2023)
+# 1. Esperar a que la red y el sistema estén listos
 sleep 10
+
+# 2. Actualizar paquetes e instalar el servidor web Apache
 dnf update -y
 dnf install -y httpd
-
-# Iniciar y habilitar el servicio de Apache
 systemctl start httpd
 systemctl enable httpd
 
-# Obtener Token IMDSv2 con tiempo de espera (timeout) para evitar bloqueos
-TOKEN=$(curl -s -X PUT "http://169.254.169" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" --connect-timeout 5)
+# 3. Obtener metadatos reales usando la herramienta de AWS con privilegios sudo
+# (Extrae el segundo parámetro de la respuesta de forma exacta)
+INSTANCE_ID=$(sudo ec2-metadata -i | awk '{print $2}')
+HOSTNAME=$(sudo ec2-metadata -l | awk '{print $2}')
 
-# Validar si obtuvimos el token antes de pedir las variables
-if [ -n "$TOKEN" ]; then
-  INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169 --connect-timeout 5)
-  HOSTNAME=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169 --connect-timeout 5)
-else
-  INSTANCE_ID="Unknown-AL2023"
+# 4. Asegurar valores por defecto en caso de que tarde un segundo extra
+if [ -z "$INSTANCE_ID" ] || [ "$INSTANCE_ID" = "com" ]; then 
+  INSTANCE_ID="i-error-en-lectura"
+fi
+if [ -z "$HOSTNAME" ]; then 
   HOSTNAME=$(hostname)
 fi
 
-# Crear el sitio web
+# 5. Escribir el sitio web index.html
 cat > /var/www/html/index.html << ENDOFHTML
 <html>
 <body style="font-family: Arial; text-align: center; padding: 50px;">
